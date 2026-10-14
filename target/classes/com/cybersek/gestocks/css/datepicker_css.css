@@ -1,0 +1,17 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+.datepicker {
+    -fx-font-size: 12px;
+    -fx-background-color: #f0f2f5;
+    -fx-border-radius: 6px;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+}
+.datepicker:hover {
+    -fx-border-color: #4a90e2;
+}
+.datepicker:focused {
+    -fx-border-color: #007bff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,123,255,0,4), 6, 0, 0, 0);
+}

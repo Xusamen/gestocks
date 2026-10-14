@@ -1,0 +1,71 @@
+
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.text-field {
+    -fx-font-size: 12px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-padding: 6px;
+    -fx-border-color: #ccc;
+}
+
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #45a049;
+}
+
+.button:cancel {
+    -fx-background-color: #f44336;
+}
+
+.button:cancel:hover {
+    -fx-background-color: #e53935;
+}
+
+.dialog-pane {
+    -fx-background-color: #e8f3fd;
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-border-color: #1abc9c;
+    -fx-border-width: 2px;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+}
+
+.choice-box {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+
+.choice-box:focused {
+    -fx-border-color: #0078D7;
+    -fx-effect: dropshadow(gaussian, #a7d0f2, 5, 0, 0, 1);
+}
+
+.datepicker {
+    -fx-font-size: 12px;
+    -fx-background-color: #f0f2f5;
+    -fx-border-radius: 6px;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+}
+.datepicker:hover {
+    -fx-border-color: #4a90e2;
+}
+.datepicker:focused {
+    -fx-border-color: #007bff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,123,255,0,4), 6, 0, 0, 0);
+}

@@ -1,0 +1,36 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+.modern-button {
+    -fx-background-color: #A4FCC4;
+    -fx-text-fill: black;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 2);
+    -fx-transition: all 0.3s ease;
+}
+
+/* MenuButton avec le même style que .modern-button */
+.modern-menu-button {
+    -fx-background-color: #A4FCC4;
+    -fx-text-fill: black;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+.modern-menu-button .label {
+    -fx-text-fill:black;
+}
+/* Lorsque le menu est déroulé (équivalent de pressed) */
+.modern-menu-button:showing {
+    -fx-background-color: #146cf2;
+}
+
+

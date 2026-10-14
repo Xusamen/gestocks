@@ -1,0 +1,38 @@
+/* Style du conteneur TabPane */
+.tab-pane {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #dcdcdc;
+}
+
+/* Style des en-têtes des onglets */
+.tab-pane .tab-header-area {
+    -fx-background-color: #ffffff;
+    -fx-padding: 5px;
+}
+
+/* Style de chaque onglet (Tab) */
+.tab-pane .tab-header-area .tab {
+    -fx-background-insets: 0;
+    -fx-background-radius: 8 8 0 0;
+    -fx-background-color: #e0e0e0;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-cursor: hand;
+}
+
+/* Onglet sélectionné */
+.tab-pane .tab-header-area .tab:selected {
+    -fx-background-color: #61FA99;
+    -fx-text-fill: white;
+}
+
+/* Onglet au survol */
+
+
+/* Contenu de l'onglet actif */
+.tab-pane .tab-content-area {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dcdcdc;
+    -fx-border-width: 0 1 1 1;
+}

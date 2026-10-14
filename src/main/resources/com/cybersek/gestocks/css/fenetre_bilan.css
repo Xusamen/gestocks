@@ -1,0 +1,41 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+.table-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 6px;
+    -fx-table-cell-border-color: #e0e0e0;
+}
+
+.table-view .column-header {
+    -fx-background-color: #ACCAD5 ;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.table-view .cell {
+    -fx-font-size: 12px;
+    -fx-padding: 5px;
+}
+
+.button:cancel {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+}
+
+.button:cancel:hover {
+    -fx-background-color: #e53935;
+}
+
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #b2dfdb;
+    -fx-background-radius: 6;
+}

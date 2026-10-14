@@ -1,0 +1,133 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.bouton-selectionne {
+    -fx-border-color: transparent transparent #0078D7 transparent;
+    -fx-border-width: 0 0 3 0;
+}
+
+/* ========================
+   TABLEVIEW
+=========================== */
+.table-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 6px;
+    -fx-table-cell-border-color: #e0e0e0;
+}
+
+.table-view .column-header {
+    -fx-background-color:#8DFBB6 ;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.table-view .cell {
+    -fx-font-size: 12px;
+    -fx-padding: 5px;
+}
+
+
+/* ========================
+   DIALOGUES & BOITES
+=========================== */
+.dialog-pane {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 4);
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #e8f5e9;
+    -fx-padding: 10;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.dialog-pane .label {
+    -fx-font-size: 14px;
+}
+
+/* ========================
+   SEPARATEUR
+=========================== */
+.separator {
+    -fx-background: #cccccc;
+    -fx-padding: 5 0 5 0;
+}
+
+/* ========================
+   SCROLLBAR (optional)
+=========================== */
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #b2dfdb;
+    -fx-background-radius: 6;
+}
+
+
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-font-size: 12px;
+    -fx-text-fill: #333;
+    -fx-prompt-text-fill: #999;
+}
+
+.text-field:focused {
+    -fx-border-color: #0078D7;
+    -fx-effect: dropshadow(gaussian, #a7d0f2, 5, 0, 0, 1);
+}
+
+/* ========================
+   CHOICEBOX
+=========================== */
+.choice-box {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+
+.choice-box:focused {
+    -fx-border-color: #0078D7;
+    -fx-effect: dropshadow(gaussian, #a7d0f2, 5, 0, 0, 1);
+}
+
+.pdf-button {
+    -fx-background-color: #2d7dd2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+.pdf-button:hover {
+    -fx-background-color: #1a5bb8;
+}
+
+.consulter-button {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+.consulter-button:hover {
+    -fx-background-color: #218838;
+}
+
+
+
+
+
+

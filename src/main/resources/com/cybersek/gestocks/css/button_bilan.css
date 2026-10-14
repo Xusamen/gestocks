@@ -1,0 +1,36 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+.pdf-button {
+    -fx-background-color: #2d7dd2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+.pdf-button:hover {
+    -fx-background-color: #1a5bb8;
+}
+
+.consulter-button {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+.consulter-button:hover {
+    -fx-background-color: #218838;
+}
+
+.rouge-button {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.rouge-button:hover {
+    -fx-background-color: #e53935;
+}

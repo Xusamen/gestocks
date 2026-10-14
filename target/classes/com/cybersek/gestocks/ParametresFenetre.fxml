@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="670.0" prefWidth="1300.0" tabClosingPolicy="UNAVAILABLE" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21">
+  <tabs>
+    <Tab text="Gestion utilisateurs">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TableView focusTraversable="false" layoutX="20.0" layoutY="113.0" prefHeight="535.0" prefWidth="1260.0" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0">
+                    <columns>
+                      <TableColumn prefWidth="75.0" text="Nom" />
+                      <TableColumn prefWidth="75.0" text="Prenoms" />
+                        <TableColumn prefWidth="75.0" text="ID" />
+                        <TableColumn prefWidth="75.0" text="Statut" />
+                    </columns>
+                  </TableView>
+                  <Label alignment="CENTER" layoutX="48.0" layoutY="14.0" text="Utilisateurs existant" AnchorPane.bottomAnchor="595.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                     <font>
+                        <Font name="Segoe UI Bold" size="30.0" />
+                     </font>
+                  </Label>
+                  <Button focusTraversable="false" layoutX="1152.0" layoutY="567.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="127.0" text="Ajouter un utilisateur" AnchorPane.bottomAnchor="25.0" AnchorPane.rightAnchor="20.0" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab text="Infos pharmacie">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+      </content>
+    </Tab>
+  </tabs>
+</TabPane>

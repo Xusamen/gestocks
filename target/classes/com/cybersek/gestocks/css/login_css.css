@@ -1,0 +1,77 @@
+/* ===============================
+   STYLES GÉNÉRAUX
+=============================== */
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* ===============================
+   LABELS
+=============================== */
+.label {
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* ===============================
+   TEXTFIELDS
+=============================== */
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 0 10px;
+    -fx-font-size: 16px;
+    -fx-text-fill: #2E2E2E;
+    -fx-prompt-text-fill: #999999;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #2E77AE;
+    -fx-effect: dropshadow(gaussian, rgba(46,119,174,0.3), 8, 0.3, 0, 2);
+}
+
+/* ===============================
+   BOUTON DE CONNEXION
+=============================== */
+#bouton_connexion {
+    -fx-background-color: #A4FCC4;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.3, 0, 2);
+}
+
+#bouton_connexion:hover {
+    -fx-background-color: #A4FCC4;
+}
+
+/* ===============================
+   CHECKBOX
+=============================== */
+.check-box {
+    -fx-text-fill: #333333;
+    -fx-font-size: 13px;
+}
+
+.check-box .box {
+    -fx-border-color: #2E77AE;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #2E77AE;
+}
+
+/* ===============================
+   FOND DU FORMULAIRE (PANE BLANC)
+=============================== */
+.pane {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.3, 0, 3);
+}

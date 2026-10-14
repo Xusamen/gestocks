@@ -1,0 +1,13 @@
+.choice-box {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+
+.choice-box:focused {
+    -fx-border-color: #0078D7;
+    -fx-effect: dropshadow(gaussian, #a7d0f2, 5, 0, 0, 1);
+}
