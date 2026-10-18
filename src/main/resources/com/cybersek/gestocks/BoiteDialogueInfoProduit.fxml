@@ -25,10 +25,11 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Text>
-      <TableView fx:id="tableau_info_produit" layoutX="50.0" layoutY="143.0" prefHeight="300.0" prefWidth="900.0" stylesheets="@css/style.css">
+      <TableView fx:id="tableau_info_produit" layoutX="24.0" layoutY="143.0" prefHeight="300.0" prefWidth="950.0" stylesheets="@css/style.css">
         <columns>
           <TableColumn fx:id="coonne_date_appro" prefWidth="115.0" text="Date Appro" />
-          <TableColumn fx:id="colonne_quantite_appro" prefWidth="140.0" text="Quantité Reception" />
+          <TableColumn fx:id="colonne_quantite_appro" prefWidth="140.0" text="Quantité Recep" />
+            <TableColumn fx:id="colonne_unite_appro" prefWidth="100.0" text="Unité" />
             <TableColumn fx:id="colonne_date_peremption" prefWidth="140.0" text="Date Péremption" />
             <TableColumn fx:id="colonne_prix_unitaire_achat" prefWidth="170.0" text="Prix Unitaire Achat (CFA)" />
             <TableColumn fx:id="colonne_quantite_restante" prefWidth="150.0" text="Quantité Restante" />
@@ -38,6 +39,6 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <Button layoutX="800.0" layoutY="475.0" mnemonicParsing="false" onAction="#FermerFenetre" prefHeight="30.0" prefWidth="150.0" styleClass="rouge-button" stylesheets="@css/button_bilan.css" text="Fermer Fenetre" />
+      <Button layoutX="824.0" layoutY="475.0" mnemonicParsing="false" onAction="#FermerFenetre" prefHeight="30.0" prefWidth="150.0" styleClass="rouge-button" stylesheets="@css/button_bilan.css" text="Fermer Fenetre" />
    </children>
 </Pane>

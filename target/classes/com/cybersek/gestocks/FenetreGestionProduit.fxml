@@ -55,11 +55,11 @@
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView fx:id="tableau_inventaire" focusTraversable="false" layoutX="144.0" layoutY="97.0" prefHeight="417.0" prefWidth="1255.0" stylesheets="@css/style.css" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="150.0">
+                  <TableView fx:id="tableau_inventaire" focusTraversable="false" layoutX="144.0" layoutY="97.0" prefHeight="417.0" prefWidth="1255.0" stylesheets="@css/style.css" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="150.0">
                     <columns>
                       <TableColumn fx:id="colonne_nom_produit_inventaire" prefWidth="350.0" text="Nom Produit" />
-                      <TableColumn fx:id="colonne_stock_total_inventaire" prefWidth="200.0" text="Stock Total Restant Dispo" />
                         <TableColumn fx:id="colonne_unite_inventaire" prefWidth="150.0" text="Unité" />
+                      <TableColumn fx:id="colonne_stock_total_inventaire" prefWidth="200.0" text="Stock Total Restant Dispo" />
                         <TableColumn fx:id="colonne_date_dernier_appro_inventaire" prefWidth="150.0" text="Derniere Mise à jour" />
                         <TableColumn fx:id="colonne_valeur_stock_inventaire" prefWidth="150.0" text="Valeur Stock (Moyenne)" />
                     </columns>

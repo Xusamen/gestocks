@@ -78,11 +78,13 @@ public class StructureDonnee {
     public static class Produit {
         private Long idProduit;
         private String libelleProduit;
+        private String unite;
         private LocalDateTime dateCreation;
 
-        public Produit(Long idProduit, String libelleProduit, LocalDateTime dateCreation) {
+        public Produit(Long idProduit, String libelleProduit, String unite, LocalDateTime dateCreation) {
             this.idProduit = idProduit;
             this.libelleProduit = libelleProduit;
+            this.unite = unite;
             this.dateCreation = dateCreation;
         }
 
@@ -93,6 +95,10 @@ public class StructureDonnee {
 
         public String getLibelleProduit() {
             return libelleProduit;
+        }
+
+        public String getUnite() {
+            return unite;
         }
 
         public LocalDateTime getDateCreation() {
@@ -115,10 +121,11 @@ public class StructureDonnee {
         private BigDecimal prixUnitaireVente;
         private int quantiteAppro;
         private int quantiteRestante;
+        private String unite;
 
         public InfoProduit(Long idStock, LocalDate dateAppro, LocalDate datePeremption,
                 BigDecimal prixUnitaireAchat, BigDecimal prixUnitaireVente,
-                int quantiteAppro, int quantiteRestante) {
+                int quantiteAppro, int quantiteRestante, String unite) {
             this.idStock = idStock;
             this.dateAppro = dateAppro;
             this.datePeremption = datePeremption;
@@ -126,9 +133,10 @@ public class StructureDonnee {
             this.prixUnitaireVente = prixUnitaireVente;
             this.quantiteAppro = quantiteAppro;
             this.quantiteRestante = quantiteRestante;
+            this.unite = unite;
         }
 
-        // Getters bruts (si besoin)
+        // Getters bruts
         public Long getIdStock() {
             return idStock;
         }
@@ -157,20 +165,123 @@ public class StructureDonnee {
             return quantiteRestante;
         }
 
-        // --- Getters formatés en dd/MM/yyyy ---
+        public String getUnite() {
+            return unite;
+        }
 
+        // Getters formatés pour les dates
         public String getDateApproFormat() {
             if (dateAppro == null)
                 return "";
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            return dateAppro.format(formatter);
+            return dateAppro.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         }
 
         public String getDatePeremptionFormat() {
             if (datePeremption == null)
                 return "";
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            return datePeremption.format(formatter);
+            return datePeremption.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         }
     }
+
+    public static class InventaireStocks {
+        private Long idProduit;
+        private String nomProduit;
+        private int stockTotal;
+        private String unite;
+        private BigDecimal valeurStock;
+        private LocalDate dateDernierAppro;
+
+        public InventaireStocks(Long idProduit, String nomProduit, int stockTotal, String unite, BigDecimal valeurStock,
+                LocalDate dateDernierAppro) {
+            this.idProduit = idProduit;
+            this.nomProduit = nomProduit;
+            this.stockTotal = stockTotal;
+            this.unite = unite;
+            this.valeurStock = valeurStock;
+            this.dateDernierAppro = dateDernierAppro;
+        }
+
+        // Getters bruts
+        public Long getIdProduit() {
+            return idProduit;
+        }
+
+        public String getNomProduit() {
+            return nomProduit;
+        }
+
+        public int getStockTotal() {
+            return stockTotal;
+        }
+
+        public String getUnite() {
+            return unite;
+        }
+
+        public BigDecimal getValeurStock() {
+            return valeurStock;
+        }
+
+        public LocalDate getDateDernierAppro() {
+            return dateDernierAppro;
+        }
+
+        // Getter formaté pour la date du dernier appro
+        public String getDateDernierApproFormat() {
+            if (dateDernierAppro == null)
+                return "-";
+            return dateDernierAppro.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        }
+    }
+
+    public static class CommandeDetails {
+        private long idCommande;
+        private long idProduit;
+        private String libelleProduit;
+        private int quantite;
+        private BigDecimal prixUnitaire;
+        private BigDecimal coutTotal;
+
+        // Constructeur, Getters et Setters
+        public CommandeDetails(long idCommande, long idProduit, String libelleProduit, int quantite,
+                BigDecimal prixUnitaire, BigDecimal coutTotal) {
+            this.idCommande = idCommande;
+            this.idProduit = idProduit;
+            this.libelleProduit = libelleProduit;
+            this.quantite = quantite;
+            this.prixUnitaire = prixUnitaire;
+            this.coutTotal = coutTotal;
+        }
+
+        public String getLibelleProduit() {
+            return libelleProduit;
+        }
+
+        public long getIdCommande() {
+            return idCommande;
+        }
+
+        public long getIdProduit() {
+            return idProduit;
+        }
+
+        public int getQuantite() {
+            return quantite;
+        }
+
+        public BigDecimal getPrixUnitaire() {
+            return prixUnitaire;
+        }
+
+        public BigDecimal getCoutTotal() {
+            return coutTotal;
+        }
+
+        @Override
+        public String toString() {
+            return "Produit: " + libelleProduit + " | Quantité: " + quantite + " | P.U: " + prixUnitaire + " | Total: "
+                    + coutTotal;
+        }
+    }
+
 }

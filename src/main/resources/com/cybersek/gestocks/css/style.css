@@ -28,6 +28,12 @@
     -fx-padding: 5px;
 }
 
+.table-view-2 .column-header {
+    -fx-background-color:#00BFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
 
 /* ========================
    DIALOGUES & BOITES

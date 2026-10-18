@@ -7,16 +7,12 @@ import com.cybersek.gestocks.ModuleStocks.GestionProduit; // ou votre classe de 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import javafx.scene.text.Text;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class BoiteDialogueInfoProduitControleur {
 
@@ -37,6 +33,9 @@ public class BoiteDialogueInfoProduitControleur {
 
     @FXML
     private TableColumn<InfoProduit, Integer> colonne_quantite_restante;
+
+    @FXML
+    private TableColumn<InfoProduit, String> colonne_unite_appro;
 
     @FXML
     private Text label_nom_produit;
@@ -69,6 +68,8 @@ public class BoiteDialogueInfoProduitControleur {
         colonne_prix_unitaire_vente.setCellValueFactory(new PropertyValueFactory<>("prixUnitaireVente"));
         colonne_quantite_appro.setCellValueFactory(new PropertyValueFactory<>("quantiteAppro"));
         colonne_quantite_restante.setCellValueFactory(new PropertyValueFactory<>("quantiteRestante"));
+        colonne_unite_appro.setCellValueFactory(new PropertyValueFactory<>("Unite"));
+
 
         // 4. Charger et lier les données de la table stocks
         ObservableList<InfoProduit> listeInfos = GestionProduit.listerInfosStocksParProduit(idProduit);

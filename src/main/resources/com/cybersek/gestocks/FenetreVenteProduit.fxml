@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="670.0" prefWidth="1300.0" stylesheets="@css/tabpane.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+  <tabs>
+    <Tab text="VENTES">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="45.0" prefWidth="1300.0" text="Validation Ventes" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="System Bold" size="30.0" />
+                     </font>
+                  </Label>
+                  <Line endX="-92.3333740234375" endY="209.0" startX="-92.3333740234375" startY="-37.0" strokeWidth="4.0" />
+                  <TableView layoutX="49.333333333333336" layoutY="85.33333333333333" prefHeight="520.0" prefWidth="1224.0" stylesheets="@css/style.css" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="85.0">
+                    <columns>
+                      <TableColumn maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="ID Vente" />
+                      <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Date Vente" />
+                        <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Heure" />
+                        <TableColumn maxWidth="500.0" minWidth="300.0" prefWidth="300.0" text="Commande Client" />
+                        <TableColumn maxWidth="150.0" prefWidth="150.0" text="Montant Total (CFA)" />
+                        <TableColumn maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="Statut Transaction" />
+                        <TableColumn prefWidth="300.0" text="Actions" />
+                    </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab text="HISTORIQUE VENTES">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+      </content>
+    </Tab>
+  </tabs>
+</TabPane>

@@ -5,12 +5,15 @@ import com.cybersek.gestocks.ModuleStocks.GestionProduit;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 
 public class BoiteDialogueModifierProduitControleur {
 
     @FXML
     private TextField champ_nom_produit;
+    @FXML
+    private ChoiceBox<String> choicebox_unite;
     private Long idProduitActuel;
 
     @FXML
@@ -22,7 +25,7 @@ public class BoiteDialogueModifierProduitControleur {
     void ModifierProduit(ActionEvent event) {
         String nouveauLibelle = champ_nom_produit.getText();
         if (nouveauLibelle != null && !nouveauLibelle.trim().isEmpty() && idProduitActuel != null) {
-            boolean succes = GestionProduit.modifierLibelleProduit(idProduitActuel, nouveauLibelle.trim());
+            boolean succes = GestionProduit.modifierProduit(idProduitActuel, nouveauLibelle.trim(), choicebox_unite.getValue().trim());
             if (succes) {
                 Functions.Alerte_succes("Produit modifié avec succès !");
                 FenetreGestionProduitControleur.FermerBoiteDialogueModifierProduit();
@@ -39,6 +42,8 @@ public class BoiteDialogueModifierProduitControleur {
         Produit produit = GestionProduit.rechercherProduitParId(idProduit);
         if (produit != null) {
             champ_nom_produit.setText(produit.getLibelleProduit());
+            choicebox_unite.setValue(produit.getUnite());
+            // je ne donne pas la possiblité de changer l'unite du produit
         }
     }
 }

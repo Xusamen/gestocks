@@ -36,21 +36,24 @@ public class BoiteDialogueApprovisionnementProduitControleur {
     // Variable pour stocker l'ID du produit concerné par l'approvisionnement
     private Long idProduitActuel;
 
+
     @FXML
     void AjouterApprovisionnement(ActionEvent event) {
         try {
-            // 1. Récupérer les valeurs des champs de texte
+            // 1. Récupérer les valeurs des champs de texte et de la ChoiceBox
             String dateApproStr = champ_date_appro.getText().trim();
             String datePerempStr = champ_date_preremp.getText().trim();
             String prixAchatStr = champ_prix_achat_unitaire.getText().trim();
             String prixVenteStr = champ_prix_vente_unitaire.getText().trim();
             String quantiteStr = champ_quantite.getText().trim();
 
+            // 2. Vérifications de base (champs vides ou unité non sélectionnée)
             if (dateApproStr.isEmpty() || datePerempStr.isEmpty() || prixAchatStr.isEmpty() ||
                     prixVenteStr.isEmpty() || quantiteStr.isEmpty()) {
                 Functions.Alerte_erreur("Veuillez remplir tous les champs.");
                 return;
             }
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             LocalDate dateAppro = LocalDate.parse(dateApproStr, formatter);
             LocalDate datePeremp = LocalDate.parse(datePerempStr, formatter);
@@ -58,6 +61,7 @@ public class BoiteDialogueApprovisionnementProduitControleur {
             BigDecimal prixAchat = new BigDecimal(prixAchatStr);
             BigDecimal prixVente = new BigDecimal(prixVenteStr);
             int quantite = Integer.parseInt(quantiteStr);
+
             if (quantite <= 0) {
                 Functions.Alerte_erreur("La quantité d'approvisionnement doit être supérieure à 0.");
                 return;
@@ -70,6 +74,7 @@ public class BoiteDialogueApprovisionnementProduitControleur {
                 return;
             }
 
+            // 3. Appel de la fonction d'ajout en passant l'unité
             boolean succes = GestionProduit.ajouterStock(
                     idProduitActuel, dateAppro, datePeremp, prixAchat, quantite, prixVente);
 

@@ -2,7 +2,6 @@ package com.cybersek.gestocks;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -189,6 +188,35 @@ public class FenetrePrincipaleControleur {
 
     @FXML
     void ouvrir_ventes_fenetre() {
+        highlightButton(Bouton_ventes);
+        if (!(conteneur.getChildren().isEmpty())) {
+            conteneur.getChildren().clear();
+        }
+        Task<TabPane> task = new Task<TabPane>() {
+            @SuppressWarnings("unused")
+            @Override
+            protected TabPane call() throws Exception {
+                TabPane FenetreGestionProduit = null;
+                try {
+
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("FenetreVenteProduitAdmin.fxml"));
+                    FenetreGestionProduit = loader.load();
+                    FenetreVenteProduitAdminControleur controleur_vente = loader.getController();
+                } catch (Exception erreur) {
+                    // Gérer l'erreur si nécessaire
+                    System.out.println(erreur.getMessage());
+                }
+                return FenetreGestionProduit;
+            }
+        };
+        task.setOnSucceeded(evenement5 -> {
+            TabPane FenetreGestionProduit = task.getValue();
+            Platform.runLater(() -> {
+                conteneur.getChildren().add(FenetreGestionProduit);
+            });
+        });
+        Thread thread = new Thread(task);
+        thread.start();
 
     }
 

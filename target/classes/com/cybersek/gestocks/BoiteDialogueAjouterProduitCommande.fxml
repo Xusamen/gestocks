@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cybersek.gestocks.BoiteDialogueAjouterProduitCommandeControleur">
+   <children>
+      <Label layoutY="1.0" prefHeight="45.0" prefWidth="500.0" text=" Ajouter Produit">
+         <font>
+            <Font name="System Bold" size="30.0" />
+         </font>
+      </Label>
+      <Label layoutX="205.0" layoutY="56.0" text="Nom Produit">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font>
+      </Label>
+      <Text fx:id="champ_nom_produit" layoutX="166.0" layoutY="102.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" wrappingWidth="168.8034210205078" />
+      <Button focusTraversable="false" layoutX="165.0" layoutY="152.0" mnemonicParsing="false" onAction="#diminuer_quantite" prefHeight="25.0" prefWidth="24.0" styleClass="rouge-button" stylesheets="@css/button_bilan.css" text="-">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Button focusTraversable="false" layoutX="297.0" layoutY="152.0" mnemonicParsing="false" onAction="#ajouter_quantité" styleClass="consulter-button" stylesheets="@css/button_bilan.css" text="+">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <TextField fx:id="champ_quantite" alignment="CENTER" layoutX="198.0" layoutY="150.0" prefHeight="28.0" prefWidth="91.0" stylesheets="@css/style.css" />
+      <Label alignment="CENTER" layoutX="163.0" layoutY="125.0" prefHeight="17.0" prefWidth="169.0" text="Quantité Voulu">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </Label>
+      <Button layoutX="238.0" layoutY="211.0" mnemonicParsing="false" onAction="#Fermer_Fenetre" styleClass="rouge-button" stylesheets="@css/button_bilan.css" text="Fermer Fenetre" />
+      <Button layoutX="360.0" layoutY="211.0" mnemonicParsing="false" onAction="#Ajouter_Produit" prefHeight="25.0" prefWidth="128.0" styleClass="consulter-button" stylesheets="@css/button_bilan.css" text="Ajouter Produit " />
+   </children>
+</Pane>

@@ -14,7 +14,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -24,8 +27,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
+import com.cybersek.gestocks.StructureDonnee.CommandeDetails;
+import com.cybersek.gestocks.StructureDonnee.InventaireStocks;
 import com.cybersek.gestocks.StructureDonnee.Produit;
 import com.cybersek.gestocks.ModuleStocks.GestionProduit;
+import com.cybersek.gestocks.ModuleStocks.Inventaire;
 
 public class FenetreGestionProduitControleur {
 
@@ -47,6 +53,32 @@ public class FenetreGestionProduitControleur {
     @FXML
     private TableView<Produit> tableau_produit;
 
+    // INVENTAIRE
+
+    @FXML
+    private TextField champ_nom_produit_inventaire;
+
+    @FXML
+    private TableColumn<InventaireStocks, String> colonne_date_dernier_appro_inventaire;
+
+    @FXML
+    private TableColumn<InventaireStocks, String> colonne_nom_produit_inventaire;
+
+    @FXML
+    private TableColumn<InventaireStocks, Integer> colonne_stock_total_inventaire;
+
+    @FXML
+    private TableColumn<InventaireStocks, String> colonne_unite_inventaire;
+
+    @FXML
+    private TableColumn<InventaireStocks, BigDecimal> colonne_valeur_stock_inventaire;
+
+    @FXML
+    private TableView<InventaireStocks> tableau_inventaire;
+
+    private ObservableList<InventaireStocks> listeInventaireComplet = FXCollections.observableArrayList();
+    private FilteredList<InventaireStocks> listeFiltreeInventaire;
+
     // 1. Liste complète d'origine
     private ObservableList<Produit> listeProduitsComprehension = FXCollections.observableArrayList();
 
@@ -61,6 +93,27 @@ public class FenetreGestionProduitControleur {
         action_bouton_gestion_produit();
         chargerProduits();
         configurerRechercheDynamique();
+        initialiserInventaire();
+    }
+
+    private void initialiserInventaire() {
+        colonne_nom_produit_inventaire.setCellValueFactory(new PropertyValueFactory<>("nomProduit"));
+        colonne_stock_total_inventaire.setCellValueFactory(new PropertyValueFactory<>("stockTotal"));
+        colonne_unite_inventaire.setCellValueFactory(new PropertyValueFactory<>("unite"));
+        colonne_valeur_stock_inventaire.setCellValueFactory(new PropertyValueFactory<>("valeurStock"));
+        colonne_date_dernier_appro_inventaire.setCellValueFactory(new PropertyValueFactory<>("DateDernierApproFormat"));
+        listeInventaireComplet = Inventaire.listerInventaire();
+        listeFiltreeInventaire = new FilteredList<>(listeInventaireComplet, p -> true);
+        tableau_inventaire.setItems(listeFiltreeInventaire);
+        champ_nom_produit_inventaire.textProperty().addListener((observable, oldValue, newValue) -> {
+            listeFiltreeInventaire.setPredicate(item -> {
+                if (newValue == null || newValue.trim().isEmpty()) {
+                    return true;
+                }
+                String saisie = newValue.toLowerCase().trim();
+                return item.getNomProduit() != null && item.getNomProduit().toLowerCase().contains(saisie);
+            });
+        });
     }
 
     private void chargerProduits() {
@@ -122,7 +175,13 @@ public class FenetreGestionProduitControleur {
         } catch (IOException erreur) {
             System.err.println(erreur.getMessage());
         }
-        chargerProduits();
+        initialize();
+    }
+
+    @FXML
+    void ImpressionInventaire(ActionEvent event) {
+        List<InventaireStocks> liste = Inventaire.listerInventaire();
+        GenerateurPDF.InventairePdf(liste);
     }
 
     // BOUTONs Actions
@@ -214,7 +273,7 @@ public class FenetreGestionProduitControleur {
                             } catch (IOException erreur) {
                                 System.err.println(erreur.getMessage());
                             }
-                            // tableau_produit.setItems(GestionProduit.listerProduits());
+                            initialize();
                         });
 
                         // --- Action Modifier ---
@@ -249,7 +308,7 @@ public class FenetreGestionProduitControleur {
                             } catch (IOException erreur) {
                                 System.err.println(erreur.getMessage());
                             }
-                            tableau_produit.setItems(GestionProduit.listerProduits());
+                            initialize();
                         });
 
                         // --- Action Infos ---
@@ -284,6 +343,7 @@ public class FenetreGestionProduitControleur {
                             } catch (IOException erreur) {
                                 System.err.println(erreur.getMessage());
                             }
+                            initialize();
                         });
                     }
 
@@ -305,4 +365,5 @@ public class FenetreGestionProduitControleur {
 
         colonne_action_produit.setCellFactory(cellFactory);
     }
+
 }
