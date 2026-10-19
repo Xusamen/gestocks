@@ -199,9 +199,9 @@ public class FenetrePrincipaleControleur {
                 TabPane FenetreGestionProduit = null;
                 try {
 
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("FenetreVenteProduitAdmin.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("FenetreVenteProduit.fxml"));
                     FenetreGestionProduit = loader.load();
-                    FenetreVenteProduitAdminControleur controleur_vente = loader.getController();
+                    FenetreVenteProduitControleur controleur_vente = loader.getController();
                 } catch (Exception erreur) {
                     // Gérer l'erreur si nécessaire
                     System.out.println(erreur.getMessage());

@@ -32,7 +32,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
-public class FenetreVenteProduitAdminControleur {
+public class FenetreVenteProduitControleur {
 
     public static long ID_VENTE = -1;
 

@@ -2,11 +2,9 @@ package com.cybersek.gestocks;
 
 import java.math.BigDecimal;
 
-import com.cybersek.gestocks.StructureDonnee.CommandeDetails;
 import com.cybersek.gestocks.StructureDonnee.InfoProduit;
 import com.cybersek.gestocks.StructureDonnee.Produit;
 import com.cybersek.gestocks.ModuleStocks.GestionProduit;
-import com.cybersek.gestocks.ModuleStocks.Inventaire;
 import com.cybersek.gestocks.ModuleVente.Commande;
 
 import javafx.event.ActionEvent;
@@ -32,22 +30,22 @@ public class BoiteDialogueAjouterProduitCommandeControleur {
 
     @FXML
     void Ajouter_Produit(ActionEvent event) {
-        long id_vente = FenetreVenteProduitAdminControleur.getID_VENTE();
+        long id_vente = FenetreVenteProduitControleur.getID_VENTE();
         if (id_vente == -1){
-            FenetreVenteProduitAdminControleur.setID_VENTE(Commande.creerVente());
+            FenetreVenteProduitControleur.setID_VENTE(Commande.creerVente());
         }
-        id_vente = FenetreVenteProduitAdminControleur.getID_VENTE();
+        id_vente = FenetreVenteProduitControleur.getID_VENTE();
         int quantite_produit = Integer.parseInt(champ_quantite.getText().trim());
         boolean statut = Commande.ajouterProduitCommande(id_vente, id_produit, quantite_produit, prix_unitaire_produit);
         if (statut){
-            FenetreVenteProduitAdminControleur.FermerBoiteDialogueAjouterProduitCommande();
+            FenetreVenteProduitControleur.FermerBoiteDialogueAjouterProduitCommande();
         }
 
     }
 
     @FXML
     void Fermer_Fenetre(ActionEvent event) {
-        FenetreVenteProduitAdminControleur.FermerBoiteDialogueAjouterProduitCommande();
+        FenetreVenteProduitControleur.FermerBoiteDialogueAjouterProduitCommande();
 
     }
 
