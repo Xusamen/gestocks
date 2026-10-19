@@ -168,22 +168,90 @@ public class Commande {
     }
 
     public static boolean annulerVenteEntiere(long idVente) {
-        String query = "UPDATE vente SET statut = 'ANNULEE', montant_total = 0.00 WHERE id = ?";
+        // 1. Récupérer tous les produits et quantités associés à cette vente
+        String sqlGetCommandes = "SELECT id_produit, quantite_produit FROM commande WHERE id_vente = ?";
 
-        try (Connection conn = DriverManager.getConnection(App.url, App.utilisateur, App.motDePasse);
-                PreparedStatement pstmt = conn.prepareStatement(query)) {
+        // 2. Mettre à jour le statut de la vente
+        String sqlUpdateVente = "UPDATE vente SET statut = 'ANNULEE', montant_total = 0.00 WHERE id = ?";
 
-            pstmt.setLong(1, idVente);
-            int lignesAffectees = pstmt.executeUpdate();
+        // 3. Pour restituer le stock (on cherche un lot actif non périmé pour
+        // réincrémenter)
+        String sqlSelectStockRestauration = "SELECT id, quantite_restante, quantite_appro FROM stocks " +
+                "WHERE id_produit = ? AND date_peremp >= CURDATE() " +
+                "ORDER BY date_appro DESC LIMIT 1";
+        String sqlUpdateStockRestaurer = "UPDATE stocks SET quantite_restante = ? WHERE id = ?";
 
-            if (lignesAffectees > 0) {
-                System.out.println("La vente #" + idVente + " a été marquée comme ANNULEE.");
+        try (Connection conn = DriverManager.getConnection(App.url, App.utilisateur, App.motDePasse)) {
+
+            // Désactiver l'autocommit pour garantir l'atomicité de toute l'opération
+            conn.setAutoCommit(false);
+
+            try {
+                // ÉTAPE A : Récupérer les articles de la vente et restituer les stocks un par
+                // un
+                try (PreparedStatement pstmtGetCmds = conn.prepareStatement(sqlGetCommandes);
+                        PreparedStatement pstmtStockSel = conn.prepareStatement(sqlSelectStockRestauration);
+                        PreparedStatement pstmtStockUp = conn.prepareStatement(sqlUpdateStockRestaurer)) {
+
+                    pstmtGetCmds.setLong(1, idVente);
+                    try (ResultSet rsCmds = pstmtGetCmds.executeQuery()) {
+
+                        while (rsCmds.next()) {
+                            long idProduit = rsCmds.getLong("id_produit");
+                            int quantiteARestituer = rsCmds.getInt("quantite_produit");
+
+                            // Chercher le lot à réapprovisionner pour ce produit
+                            pstmtStockSel.setLong(1, idProduit);
+                            try (ResultSet rsStock = pstmtStockSel.executeQuery()) {
+                                if (rsStock.next()) {
+                                    long idStockLot = rsStock.getLong("id");
+                                    int qteRestante = rsStock.getInt("quantite_restante");
+                                    int qteAppro = rsStock.getInt("quantite_appro");
+
+                                    // Ne pas dépasser la quantité initiale du lot
+                                    int nouvelleQte = Math.min(qteAppro, qteRestante + quantiteARestituer);
+
+                                    pstmtStockUp.setInt(1, nouvelleQte);
+                                    pstmtStockUp.setLong(2, idStockLot);
+                                    pstmtStockUp.executeUpdate();
+                                } else {
+                                    System.err.println(
+                                            "Attention : Aucun lot actif trouvé pour restituer le stock du produit ID "
+                                                    + idProduit);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // ÉTAPE B : Mettre à jour le statut et le montant de la vente
+                int lignesAffectees = 0;
+                try (PreparedStatement pstmtVente = conn.prepareStatement(sqlUpdateVente)) {
+                    pstmtVente.setLong(1, idVente);
+                    lignesAffectees = pstmtVente.executeUpdate();
+                }
+
+                if (lignesAffectees == 0) {
+                    conn.rollback();
+                    System.err.println("Vente introuvable ou déjà annulée (ID: " + idVente + ")");
+                    return false;
+                }
+
+                // Valider la transaction globale
+                conn.commit();
+                System.out.println(
+                        "La vente #" + idVente + " a été annulée et tous les stocks associés ont été restaurés.");
                 return true;
+
+            } catch (SQLException e) {
+                // En cas d'erreur, tout annuler
+                conn.rollback();
+                throw e;
             }
-            return false;
 
         } catch (SQLException e) {
-            System.err.println("Erreur SQL lors de l'annulation de la vente : " + e.getMessage());
+            System.err.println(
+                    "Erreur SQL lors de l'annulation de la vente et de la restauration du stock : " + e.getMessage());
             e.printStackTrace();
             return false;
         }
