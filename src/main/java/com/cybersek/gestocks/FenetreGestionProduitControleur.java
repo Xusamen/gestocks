@@ -16,7 +16,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javafx.scene.layout.HBox;
@@ -27,7 +26,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
-import com.cybersek.gestocks.StructureDonnee.CommandeDetails;
 import com.cybersek.gestocks.StructureDonnee.InventaireStocks;
 import com.cybersek.gestocks.StructureDonnee.Produit;
 import com.cybersek.gestocks.ModuleStocks.GestionProduit;

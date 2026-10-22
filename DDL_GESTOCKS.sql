@@ -1,5 +1,6 @@
 use gestocks;
-// DESTION UTILISATEUR CREATE TABLE `utilisateurs` (
+// DESTION UTILISATEUR 
+CREATE TABLE `utilisateurs` (
   `id_utilisateur` INT NOT NULL AUTO_INCREMENT,
   `nom` VARCHAR(100) DEFAULT NULL,
   `prenom` VARCHAR(100) DEFAULT NULL,
@@ -170,23 +171,29 @@ CREATE TABLE stocks (
     AND quantite_restante <= quantite_appro
   )
 );
+
+// 03 etat INTERROMPUE, EN_ATTENTE, PAYEE
 CREATE TABLE vente (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  type_encaissement  VARCHAR(255),
   date_vente DATETIME DEFAULT CURRENT_TIMESTAMP,
   montant_total DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
   montant_verser DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
   monnaie_rendu DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  reduction_appliquer DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
   numero_recu VARCHAR(255),
-  statut VARCHAR(20) DEFAULT 'NON_PAYEE'
+  statut VARCHAR(30) DEFAULT 'INTERROMPUE'
 );
 
 CREATE TABLE commande (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   id_vente BIGINT NOT NULL,
   id_produit BIGINT NOT NULL,
+  id_stock_prov BIGINT NOT NULL,
   quantite_produit INT NOT NULL,
   prix_unitaire DECIMAL(10, 2) NOT NULL,
   cout_total DECIMAL(10, 2) NOT NULL,
   FOREIGN KEY (id_vente) REFERENCES vente(id) ON DELETE CASCADE,
-  FOREIGN KEY (id_produit) REFERENCES produit(id_produit)
+  FOREIGN KEY (id_produit) REFERENCES produit(id_produit),
+  FOREIGN KEY (id_stock_prov) REFERENCES stocks(id)
 );

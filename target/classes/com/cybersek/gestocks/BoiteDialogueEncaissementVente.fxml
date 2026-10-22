@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="334.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cybersek.gestocks.BoiteDialogueEncaissementVenteControleur">
+   <children>
+      <Label layoutX="96.0" layoutY="142.0" prefHeight="17.0" prefWidth="150.0" text="Type Encaissement Client">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="95.0" layoutY="205.0" text="Somme  Versée (TTC)">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </Label>
+      <ChoiceBox fx:id="choicebox_type_encaissement" layoutX="95.0" layoutY="160.0" prefWidth="150.0" stylesheets="@css/style.css" />
+      <TextField fx:id="champ_reduction_encaissement" layoutX="362.0" layoutY="160.0" stylesheets="@css/style.css" />
+      <Label layoutX="362.0" layoutY="205.0" text="Monnaie Rendue">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </Label>
+      <TextField fx:id="champ_monnaie_rendu" layoutX="362.0" layoutY="222.0" stylesheets="@css/style.css" />
+      <Label layoutX="362.0" layoutY="143.0" prefHeight="17.0" prefWidth="150.0" text="Reduction Appliqué">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </Label>
+      <TextField fx:id="champ_somme_verser" layoutX="95.0" layoutY="222.0" stylesheets="@css/style.css" />
+      <Button layoutX="439.0" layoutY="291.0" mnemonicParsing="false" onAction="#EncaisserClient" prefHeight="35.0" prefWidth="150.0" styleClass="consulter-button" stylesheets="@css/button_bilan.css" text="Encaisser  Client" />
+      <Label alignment="CENTER" layoutY="-1.0" prefHeight="45.0" prefWidth="600.0" text="Fomulaire Encaissement">
+         <font>
+            <Font name="System Bold" size="30.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="1.0" layoutY="57.0" prefHeight="30.0" prefWidth="600.0" text="Cout Total de la commande">
+         <font>
+            <Font name="System Bold Italic" size="20.0" />
+         </font>
+      </Label>
+      <Text fx:id="label_cout_total" layoutX="1.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" wrappingWidth="600.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Button layoutX="280.0" layoutY="291.0" mnemonicParsing="false" onAction="#FermerFenetre" prefHeight="35.0" prefWidth="120.0" styleClass="rouge-button" stylesheets="@css/button_bilan.css" text="Fermer Fenetre" />
+   </children>
+</Pane>

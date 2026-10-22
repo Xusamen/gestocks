@@ -7,10 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.cybersek.gestocks.App;
+import com.cybersek.gestocks.Functions;
 import com.cybersek.gestocks.StructureDonnee.CommandeDetails;
 
 import javafx.collections.FXCollections;
@@ -19,7 +18,7 @@ import javafx.collections.ObservableList;
 public class Commande {
 
     public static long creerVente() {
-        String sql = "INSERT INTO vente (statut) VALUES ('NON_PAYEE')";
+        String sql = "INSERT INTO vente (statut) VALUES ('INTERROMPUE')";
 
         try (Connection conn = DriverManager.getConnection(App.url, App.utilisateur, App.motDePasse);
                 PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -29,14 +28,13 @@ public class Commande {
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
                 if (rs.next()) {
                     long idVente = rs.getLong(1);
-                    System.out.println("Vente créée avec succès, ID : " + idVente);
+                    System.out.println("Vente initialisée en état INTERROMPUE, ID : " + idVente);
                     return idVente;
                 } else {
                     System.err.println("Échec de la création de la vente : aucun ID généré.");
                     return -1;
                 }
             }
-
         } catch (SQLException e) {
             System.err.println("Erreur SQL lors de la création de la vente : " + e.getMessage());
             e.printStackTrace();
@@ -44,75 +42,72 @@ public class Commande {
         }
     }
 
-    public static boolean ajouterProduitCommande(long idVente, long idProduit, int quantiteRestante,
+    public static boolean ajouterProduitCommande(long idVente, long idProduit, int quantiteDemandee,
             BigDecimal prixUnitaire) {
-        BigDecimal coutTotal = new BigDecimal(quantiteRestante).multiply(prixUnitaire);
-
-        String sqlCommande = "INSERT INTO commande (id_vente, id_produit, quantite_produit, prix_unitaire, cout_total) VALUES (?, ?, ?, ?, ?)";
-        String sqlUpdateVente = "UPDATE vente SET montant_total = (SELECT COALESCE(SUM(cout_total), 0) FROM commande WHERE id_vente = ?) WHERE id = ?";
-
-        // Requête pour trouver les lots de stock disponibles, non périmés, du plus
-        // ancien au plus récent
+        // Requête pour trouver le stock non périmé le plus ancien (FIFO)
         String sqlSelectStock = "SELECT id, quantite_restante FROM stocks " +
                 "WHERE id_produit = ? AND quantite_restante > 0 AND date_peremp >= CURDATE() " +
-                "ORDER BY date_appro ASC, date_peremp ASC";
+                "ORDER BY date_appro ASC, date_peremp ASC LIMIT 1";
         String sqlUpdateStock = "UPDATE stocks SET quantite_restante = ? WHERE id = ?";
+
+        // Insertion avec l'id_stock_prov source
+        String sqlCommande = "INSERT INTO commande (id_vente, id_produit, id_stock_prov, quantite_produit, prix_unitaire, cout_total) VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlUpdateVente = "UPDATE vente SET montant_total = (SELECT COALESCE(SUM(cout_total), 0) FROM commande WHERE id_vente = ?) WHERE id = ?";
 
         try (Connection conn = DriverManager.getConnection(App.url, App.utilisateur, App.motDePasse)) {
             conn.setAutoCommit(false);
 
             try {
-                // ÉTAPE 1 : Gestion du stock (Décrémentation FIFO)
-                int quantiteAjuster = quantiteRestante;
+                long idStockSource = -1;
+                int qteRestanteLot = 0;
 
-                try (PreparedStatement pstmtStockSelect = conn.prepareStatement(sqlSelectStock);
-                        PreparedStatement pstmtStockUpdate = conn.prepareStatement(sqlUpdateStock)) {
-
-                    pstmtStockSelect.setLong(1, idProduit);
-                    try (ResultSet rsStock = pstmtStockSelect.executeQuery()) {
-                        while (rsStock.next() && quantiteAjuster > 0) {
-                            long idStockLot = rsStock.getLong("id");
-                            int qteRestanteLot = rsStock.getInt("quantite_restante");
-
-                            int qteAPrelever = Math.min(quantiteAjuster, qteRestanteLot);
-                            int nouvelleQteStock = qteRestanteLot - qteAPrelever;
-
-                            // Mettre à jour le lot de stock
-                            pstmtStockUpdate.setInt(1, nouvelleQteStock);
-                            pstmtStockUpdate.setLong(2, idStockLot);
-                            pstmtStockUpdate.executeUpdate();
-
-                            quantiteAjuster -= qteAPrelever;
+                // ÉTAPE 1 : Trouver le lot source valide (FIFO + non périmé)
+                try (PreparedStatement pstmtSel = conn.prepareStatement(sqlSelectStock)) {
+                    pstmtSel.setLong(1, idProduit);
+                    try (ResultSet rs = pstmtSel.executeQuery()) {
+                        if (rs.next()) {
+                            idStockSource = rs.getLong("id");
+                            qteRestanteLot = rs.getInt("quantite_restante");
                         }
                     }
                 }
 
-                // Si le stock disponible était insuffisant
-                if (quantiteAjuster > 0) {
+                if (idStockSource == -1 || qteRestanteLot < quantiteDemandee) {
                     conn.rollback();
-                    System.err.println("Stock insuffisant ou produits périmés pour le produit ID " + idProduit);
+                    System.err.println("Stock insuffisant ou produit périmé pour le produit ID " + idProduit);
+                    Functions.Alerte_erreur("Stocks Insuffisant");
                     return false;
                 }
 
-                // ÉTAPE 2 : Insérer la commande
+                // ÉTAPE 2 : Décrémenter ce stock précis
+                int nouvelleQteStock = qteRestanteLot - quantiteDemandee;
+                try (PreparedStatement pstmtUp = conn.prepareStatement(sqlUpdateStock)) {
+                    pstmtUp.setInt(1, nouvelleQteStock);
+                    pstmtUp.setLong(2, idStockSource);
+                    pstmtUp.executeUpdate();
+                }
+
+                // ÉTAPE 3 : Insérer la commande en enregistrant le lot source (`idStockSource`)
+                BigDecimal coutTotal = new BigDecimal(quantiteDemandee).multiply(prixUnitaire);
                 try (PreparedStatement pstmtCmd = conn.prepareStatement(sqlCommande)) {
                     pstmtCmd.setLong(1, idVente);
                     pstmtCmd.setLong(2, idProduit);
-                    pstmtCmd.setInt(3, quantiteRestante);
-                    pstmtCmd.setBigDecimal(4, prixUnitaire);
-                    pstmtCmd.setBigDecimal(5, coutTotal);
+                    pstmtCmd.setLong(3, idStockSource); // <-- On mémorise le lot d'origine !
+                    pstmtCmd.setInt(4, quantiteDemandee);
+                    pstmtCmd.setBigDecimal(5, prixUnitaire);
+                    pstmtCmd.setBigDecimal(6, coutTotal);
                     pstmtCmd.executeUpdate();
                 }
 
-                // ÉTAPE 3 : Mettre à jour le montant total de la vente
-                try (PreparedStatement pstmtUpdate = conn.prepareStatement(sqlUpdateVente)) {
-                    pstmtUpdate.setLong(1, idVente);
-                    pstmtUpdate.setLong(2, idVente);
-                    pstmtUpdate.executeUpdate();
+                // ÉTAPE 4 : Mettre à jour le montant total de la vente
+                try (PreparedStatement pstmtUpVente = conn.prepareStatement(sqlUpdateVente)) {
+                    pstmtUpVente.setLong(1, idVente);
+                    pstmtUpVente.setLong(2, idVente);
+                    pstmtUpVente.executeUpdate();
                 }
 
                 conn.commit();
-                System.out.println("Commande ajoutée et stock mis à jour pour le produit ID " + idProduit);
+                System.out.println("Commande ajoutée avec succès depuis le lot stock ID: " + idStockSource);
                 return true;
 
             } catch (SQLException e) {
@@ -168,63 +163,32 @@ public class Commande {
     }
 
     public static boolean annulerVenteEntiere(long idVente) {
-        // 1. Récupérer tous les produits et quantités associés à cette vente
-        String sqlGetCommandes = "SELECT id_produit, quantite_produit FROM commande WHERE id_vente = ?";
-
-        // 2. Mettre à jour le statut de la vente
+        String sqlGetCommandes = "SELECT id_stock_prov, quantite_produit FROM commande WHERE id_vente = ?";
         String sqlUpdateVente = "UPDATE vente SET statut = 'ANNULEE', montant_total = 0.00 WHERE id = ?";
-
-        // 3. Pour restituer le stock (on cherche un lot actif non périmé pour
-        // réincrémenter)
-        String sqlSelectStockRestauration = "SELECT id, quantite_restante, quantite_appro FROM stocks " +
-                "WHERE id_produit = ? AND date_peremp >= CURDATE() " +
-                "ORDER BY date_appro DESC LIMIT 1";
-        String sqlUpdateStockRestaurer = "UPDATE stocks SET quantite_restante = ? WHERE id = ?";
+        String sqlRestaurerStock = "UPDATE stocks SET quantite_restante = LEAST(quantite_appro, quantite_restante + ?) WHERE id = ?";
 
         try (Connection conn = DriverManager.getConnection(App.url, App.utilisateur, App.motDePasse)) {
-
-            // Désactiver l'autocommit pour garantir l'atomicité de toute l'opération
             conn.setAutoCommit(false);
 
             try {
-                // ÉTAPE A : Récupérer les articles de la vente et restituer les stocks un par
-                // un
+                // ÉTAPE 1 : Restituer chaque quantité dans son lot d'origine (id_stock_prov)
                 try (PreparedStatement pstmtGetCmds = conn.prepareStatement(sqlGetCommandes);
-                        PreparedStatement pstmtStockSel = conn.prepareStatement(sqlSelectStockRestauration);
-                        PreparedStatement pstmtStockUp = conn.prepareStatement(sqlUpdateStockRestaurer)) {
+                        PreparedStatement pstmtStock = conn.prepareStatement(sqlRestaurerStock)) {
 
                     pstmtGetCmds.setLong(1, idVente);
-                    try (ResultSet rsCmds = pstmtGetCmds.executeQuery()) {
+                    try (ResultSet rs = pstmtGetCmds.executeQuery()) {
+                        while (rs.next()) {
+                            long idStockProv = rs.getLong("id_stock_prov");
+                            int quantite = rs.getInt("quantite_produit");
 
-                        while (rsCmds.next()) {
-                            long idProduit = rsCmds.getLong("id_produit");
-                            int quantiteARestituer = rsCmds.getInt("quantite_produit");
-
-                            // Chercher le lot à réapprovisionner pour ce produit
-                            pstmtStockSel.setLong(1, idProduit);
-                            try (ResultSet rsStock = pstmtStockSel.executeQuery()) {
-                                if (rsStock.next()) {
-                                    long idStockLot = rsStock.getLong("id");
-                                    int qteRestante = rsStock.getInt("quantite_restante");
-                                    int qteAppro = rsStock.getInt("quantite_appro");
-
-                                    // Ne pas dépasser la quantité initiale du lot
-                                    int nouvelleQte = Math.min(qteAppro, qteRestante + quantiteARestituer);
-
-                                    pstmtStockUp.setInt(1, nouvelleQte);
-                                    pstmtStockUp.setLong(2, idStockLot);
-                                    pstmtStockUp.executeUpdate();
-                                } else {
-                                    System.err.println(
-                                            "Attention : Aucun lot actif trouvé pour restituer le stock du produit ID "
-                                                    + idProduit);
-                                }
-                            }
+                            pstmtStock.setInt(1, quantite);
+                            pstmtStock.setLong(2, idStockProv);
+                            pstmtStock.executeUpdate();
                         }
                     }
                 }
 
-                // ÉTAPE B : Mettre à jour le statut et le montant de la vente
+                // ÉTAPE 2 : Mettre à jour le statut de la vente à 'ANNULEE'
                 int lignesAffectees = 0;
                 try (PreparedStatement pstmtVente = conn.prepareStatement(sqlUpdateVente)) {
                     pstmtVente.setLong(1, idVente);
@@ -233,56 +197,52 @@ public class Commande {
 
                 if (lignesAffectees == 0) {
                     conn.rollback();
-                    System.err.println("Vente introuvable ou déjà annulée (ID: " + idVente + ")");
+                    System.err.println("Vente introuvable (ID: " + idVente + ")");
                     return false;
                 }
 
-                // Valider la transaction globale
                 conn.commit();
-                System.out.println(
-                        "La vente #" + idVente + " a été annulée et tous les stocks associés ont été restaurés.");
+                System.out
+                        .println("Vente #" + idVente + " annulée et tous les stocks d'origine restaurés avec succès.");
                 return true;
 
             } catch (SQLException e) {
-                // En cas d'erreur, tout annuler
                 conn.rollback();
                 throw e;
             }
 
         } catch (SQLException e) {
-            System.err.println(
-                    "Erreur SQL lors de l'annulation de la vente et de la restauration du stock : " + e.getMessage());
+            System.err.println("Erreur SQL lors de l'annulation de la vente : " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
     public static boolean retirerProduitCommande(long idCommande) {
-        String sqlGetInfosCommande = "SELECT id_vente, id_produit, quantite_produit FROM commande WHERE id = ?";
+        // On récupère directement l'id_stock_prov et la quantité depuis la ligne de
+        // commande
+        String sqlGetInfos = "SELECT id_vente, id_stock_prov, quantite_produit FROM commande WHERE id = ?";
         String sqlDelete = "DELETE FROM commande WHERE id = ?";
         String sqlUpdateVente = "UPDATE vente SET montant_total = (SELECT COALESCE(SUM(cout_total), 0) FROM commande WHERE id_vente = ?) WHERE id = ?";
 
-        // Pour réinjecter le stock (on cherche un lot actif du produit pour le
-        // réalimenter)
-        String sqlSelectStockRestauration = "SELECT id, quantite_restante, quantite_appro FROM stocks " +
-                "WHERE id_produit = ? AND date_peremp >= CURDATE() " +
-                "ORDER BY date_appro DESC LIMIT 1";
-        String sqlUpdateStockRestaurer = "UPDATE stocks SET quantite_restante = ? WHERE id = ?";
+        // Restituer dans le lot d'origine en s'assurant qu'on ne dépasse pas la
+        // quantité initiale (quantite_appro)
+        String sqlRestaurerStock = "UPDATE stocks SET quantite_restante = LEAST(quantite_appro, quantite_restante + ?) WHERE id = ?";
 
         try (Connection conn = DriverManager.getConnection(App.url, App.utilisateur, App.motDePasse)) {
             conn.setAutoCommit(false);
             long idVente = -1;
-            long idProduit = -1;
+            long idStock = -1;
             int quantiteARestituer = 0;
 
             try {
-                // ÉTAPE 1 : Récupérer les informations de la ligne avant suppression
-                try (PreparedStatement pstmtGet = conn.prepareStatement(sqlGetInfosCommande)) {
+                // ÉTAPE 1 : Récupérer les infos de la ligne de commande
+                try (PreparedStatement pstmtGet = conn.prepareStatement(sqlGetInfos)) {
                     pstmtGet.setLong(1, idCommande);
                     try (ResultSet rs = pstmtGet.executeQuery()) {
                         if (rs.next()) {
                             idVente = rs.getLong("id_vente");
-                            idProduit = rs.getLong("id_produit");
+                            idStock = rs.getLong("id_stock_prov");
                             quantiteARestituer = rs.getInt("quantite_produit");
                         } else {
                             System.err.println("Ligne de commande introuvable (ID: " + idCommande + ")");
@@ -291,34 +251,11 @@ public class Commande {
                     }
                 }
 
-                // ÉTAPE 2 : Remettre la quantité dans le stock
-                try (PreparedStatement pstmtStockSel = conn.prepareStatement(sqlSelectStockRestauration);
-                        PreparedStatement pstmtStockUp = conn.prepareStatement(sqlUpdateStockRestaurer)) {
-
-                    pstmtStockSel.setLong(1, idProduit);
-                    try (ResultSet rsStock = pstmtStockSel.executeQuery()) {
-                        if (rsStock.next()) {
-                            long idStockLot = rsStock.getLong("id");
-                            int qteRestante = rsStock.getInt("quantite_restante");
-                            int qteAppro = rsStock.getInt("quantite_appro");
-
-                            // Ne pas dépasser la quantité initiale approvisionnée du lot
-                            int nouvelleQte = Math.min(qteAppro, qteRestante + quantiteARestituer);
-
-                            pstmtStockUp.setInt(1, nouvelleQte);
-                            pstmtStockUp.setLong(2, idStockLot);
-                            pstmtStockUp.executeUpdate();
-                        } else {
-                            // S'il n'y a plus de lot actif non périmé, on peut éventuellement rouvrir ou
-                            // créer,
-                            // mais généralement on réincrémente le dernier lot existant même s'il est
-                            // périmé de justesse,
-                            // ou on gère selon votre règle métier. Ici on sécurise en cherchant n'importe
-                            // quel lot récent.
-                            System.err.println("Attention : Aucun lot actif trouvé pour restituer le stock du produit "
-                                    + idProduit);
-                        }
-                    }
+                // ÉTAPE 2 : Remettre exactement la quantité dans le lot d'origine
+                try (PreparedStatement pstmtStock = conn.prepareStatement(sqlRestaurerStock)) {
+                    pstmtStock.setInt(1, quantiteARestituer);
+                    pstmtStock.setLong(2, idStock);
+                    pstmtStock.executeUpdate();
                 }
 
                 // ÉTAPE 3 : Supprimer la ligne de commande
@@ -335,7 +272,8 @@ public class Commande {
                 }
 
                 conn.commit();
-                System.out.println("Produit retiré de la commande et stock restitué avec succès.");
+                System.out.println("Produit retiré et stock restitué avec succès dans le lot d'origine (Stock ID: "
+                        + idStock + ").");
                 return true;
 
             } catch (SQLException e) {
@@ -344,11 +282,124 @@ public class Commande {
             }
 
         } catch (SQLException e) {
-            System.err
-                    .println("Erreur SQL lors du retrait du produit et de la mise à jour du stock : " + e.getMessage());
+            System.err.println("Erreur SQL lors du retrait du produit : " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
+    public static boolean ValiderCommandeVente(long idVente) {
+        // On vérifie que la vente est bien 'INTERROMPUE' et qu'elle possède un montant
+        // total > 0
+        String sqlCheck = "SELECT statut, montant_total FROM vente WHERE id = ?";
+        String sqlUpdate = "UPDATE vente SET statut = 'EN_ATTENTE' WHERE id = ?";
+
+        try (Connection conn = DriverManager.getConnection(App.url, App.utilisateur, App.motDePasse)) {
+            conn.setAutoCommit(false);
+
+            try {
+                // ÉTAPE 1 : Vérification de l'état actuel de la vente
+                try (PreparedStatement pstmtCheck = conn.prepareStatement(sqlCheck)) {
+                    pstmtCheck.setLong(1, idVente);
+                    try (ResultSet rs = pstmtCheck.executeQuery()) {
+                        if (rs.next()) {
+                            String statut = rs.getString("statut");
+                            BigDecimal montantTotal = rs.getBigDecimal("montant_total");
+
+                            if (!"INTERROMPUE".equals(statut)) {
+                                System.err.println("Impossible de valider : la vente n'est pas à l'état INTERROMPUE.");
+                                conn.rollback();
+                                return false;
+                            }
+
+                            if (montantTotal.compareTo(BigDecimal.ZERO) <= 0) {
+                                System.err.println(
+                                        "Impossible de valider : le panier est vide (montant total égal à 0).");
+                                conn.rollback();
+                                return false;
+                            }
+                        } else {
+                            System.err.println("Vente introuvable (ID: " + idVente + ")");
+                            conn.rollback();
+                            return false;
+                        }
+                    }
+                }
+
+                // ÉTAPE 2 : Passage du statut à 'EN_ATTENTE'
+                try (PreparedStatement pstmtUpdate = conn.prepareStatement(sqlUpdate)) {
+                    pstmtUpdate.setLong(1, idVente);
+                    pstmtUpdate.executeUpdate();
+                }
+
+                conn.commit();
+                System.out.println("Vente #" + idVente + " passée à l'état EN_ATTENTE de paiement.");
+                return true;
+
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur SQL lors du passage de la vente en EN_ATTENTE : " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static BigDecimal calculerMontantTotalCommande(long idVente) {
+        String sqlCalculEtUpdate = "UPDATE vente SET montant_total = (" +
+                "    SELECT COALESCE(SUM(cout_total), 0.00) " +
+                "    FROM commande " +
+                "    WHERE id_vente = ? " +
+                ") WHERE id = ?";
+
+        String sqlGetMontant = "SELECT montant_total FROM vente WHERE id = ?";
+
+        BigDecimal montantTotal = BigDecimal.ZERO;
+
+        try (Connection conn = DriverManager.getConnection(App.url, App.utilisateur, App.motDePasse)) {
+
+            // Désactiver l'auto-commit pour la transaction
+            conn.setAutoCommit(false);
+
+            try {
+                // Étape 1 : Mettre à jour le montant total dans la table vente
+                try (PreparedStatement pstmtUpdate = conn.prepareStatement(sqlCalculEtUpdate)) {
+                    pstmtUpdate.setLong(1, idVente);
+                    pstmtUpdate.setLong(2, idVente);
+                    pstmtUpdate.executeUpdate();
+                }
+
+                // Étape 2 : Récupérer la valeur mise à jour pour la retourner
+                try (PreparedStatement pstmtGet = conn.prepareStatement(sqlGetMontant)) {
+                    pstmtGet.setLong(1, idVente);
+                    try (ResultSet rs = pstmtGet.executeQuery()) {
+                        if (rs.next()) {
+                            montantTotal = rs.getBigDecimal("montant_total");
+                            if (montantTotal == null) {
+                                montantTotal = BigDecimal.ZERO;
+                            }
+                        }
+                    }
+                }
+
+                // Valider la transaction
+                conn.commit();
+                System.out.println(
+                        "Montant total de la vente #" + idVente + " recalculé avec succès : " + montantTotal + " CFA");
+                return montantTotal;
+
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur SQL lors du calcul du montant total : " + e.getMessage());
+            e.printStackTrace();
+            return BigDecimal.ZERO;
+        }
+    }
 }

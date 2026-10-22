@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -19,7 +18,7 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <Label alignment="CENTER" prefHeight="45.0" prefWidth="1300.0" text="Ventes">
+                  <Label alignment="CENTER" prefHeight="45.0" prefWidth="1300.0" text="Ventes" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font name="System Bold" size="30.0" />
                      </font>
@@ -57,42 +56,12 @@
                   </Pane>
                   <Pane layoutX="700.0" layoutY="364.0" prefHeight="290.0" prefWidth="550.0" style="-fx-background-color: #F9BECA; -fx-background-radius: 10;" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="20.0">
                      <children>
-                        <Label alignment="CENTER" prefHeight="36.0" prefWidth="573.0" text="Encaissement Pharmacie">
+                        <Label alignment="CENTER" layoutY="8.0" prefHeight="30.0" prefWidth="550.0" text="Montant total dû">
                            <font>
                               <Font name="System Bold Italic" size="25.0" />
                            </font>
                         </Label>
-                        <Label layoutX="30.0" layoutY="110.0" prefHeight="17.0" prefWidth="150.0" text="Type Encaissement Client">
-                           <font>
-                              <Font name="System Bold Italic" size="12.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="29.0" layoutY="173.0" text="Somme  Versée (TTC)">
-                           <font>
-                              <Font name="System Bold Italic" size="12.0" />
-                           </font>
-                        </Label>
-                        <ChoiceBox layoutX="29.0" layoutY="128.0" prefWidth="150.0" stylesheets="@css/style.css" />
-                        <TextField layoutX="296.0" layoutY="128.0" stylesheets="@css/style.css" />
-                        <Label layoutX="296.0" layoutY="173.0" text="Monnaie Rendue">
-                           <font>
-                              <Font name="System Bold Italic" size="12.0" />
-                           </font>
-                        </Label>
-                        <TextField layoutX="296.0" layoutY="190.0" stylesheets="@css/style.css" />
-                        <Label layoutX="296.0" layoutY="111.0" prefHeight="17.0" prefWidth="150.0" text="Reduction Appliqué">
-                           <font>
-                              <Font name="System Bold Italic" size="12.0" />
-                           </font>
-                        </Label>
-                        <TextField layoutX="29.0" layoutY="190.0" stylesheets="@css/style.css" />
-                        <Button layoutX="376.0" layoutY="243.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="150.0" styleClass="consulter-button" stylesheets="@css/button_bilan.css" text="Encaisser  Client" />
-                        <Label layoutX="29.0" layoutY="57.0" text="Montant Total Due :">
-                           <font>
-                              <Font name="System Bold Italic" size="20.0" />
-                           </font>
-                        </Label>
-                        <Text layoutX="239.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                        <Text fx:id="label_montant_total" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" wrappingWidth="545.5611267089844">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -129,15 +98,15 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView prefHeight="520.0" prefWidth="1224.0" stylesheets="@css/style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="150.0">
+                  <TableView fx:id="tableau_encaissement" prefHeight="520.0" prefWidth="1224.0" stylesheets="@css/style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="150.0">
                      <columns>
-                        <TableColumn maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="ID Vente" />
-                        <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Date Vente" />
-                        <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Heure" />
-                        <TableColumn maxWidth="500.0" minWidth="300.0" prefWidth="300.0" text="Commande Client" />
-                        <TableColumn maxWidth="150.0" prefWidth="150.0" text="Montant Total (CFA)" />
-                        <TableColumn maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="Statut Transaction" />
-                        <TableColumn prefWidth="300.0" text="Actions" />
+                        <TableColumn fx:id="colonne_IdVente_encaissement" maxWidth="70.0" prefWidth="70.0" text="ID Vente" />
+                        <TableColumn fx:id="colonne_date_encaissement" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Date" />
+                        <TableColumn fx:id="colonne_heure_encaissement" maxWidth="75.0" minWidth="100.0" prefWidth="75.0" text="Heure" />
+                        <TableColumn fx:id="colonne_commandeclient_encaissement" minWidth="300.0" prefWidth="300.0" text="Commande Client" />
+                        <TableColumn fx:id="colonne_montant_encaissement" maxWidth="150.0" prefWidth="150.0" text="Montant Total (CFA)" />
+                        <TableColumn fx:id="colonne_statut_encaissement" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="Statut Transaction" />
+                        <TableColumn fx:id="colonne_action_encaissement" maxWidth="350.0" minWidth="350.0" prefWidth="350.0" text="Actions" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -153,8 +122,50 @@
       </Tab>
     <Tab text="HISTORIQUE ENCAISSEMENT">
       <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Label alignment="CENTER" layoutX="170.0" layoutY="31.0" text="Historique Encaissement" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="System Bold" size="30.0" />
+                     </font>
+                  </Label>
+                  <TableView layoutX="14.0" layoutY="96.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="150.0">
+                    <columns>
+                      <TableColumn prefWidth="350.0" text="Nom et Prenom" />
+                      <TableColumn prefWidth="100.0" text="Montant Total" />
+                        <TableColumn prefWidth="100.0" text="Date" />
+                        <TableColumn maxWidth="75.0" prefWidth="75.0" text="Heure" />
+                    </columns>
+                  </TableView>
+               </children></AnchorPane>
       </content>
     </Tab>
+      <Tab text="BILAN">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TabPane layoutX="61.0" layoutY="39.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <tabs>
+                      <Tab text="Journalier">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                      <Tab text="Mensuel">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                        <Tab text="Annuel">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
   </tabs>
 </TabPane>

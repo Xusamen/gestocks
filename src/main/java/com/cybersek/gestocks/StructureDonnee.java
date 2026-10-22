@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javafx.beans.property.*;
 
 public class StructureDonnee {
 
@@ -283,5 +284,75 @@ public class StructureDonnee {
                     + coutTotal;
         }
     }
+
+    public static  class InfoEncaissement {
+        private final LongProperty idVente;
+        private final StringProperty dateVente;
+        private final StringProperty heureVente;
+        private final StringProperty commandeClient;
+        private final ObjectProperty<BigDecimal> montantTotal;
+        private final StringProperty statutTransaction;
+
+        public InfoEncaissement(long idVente, String dateVente, String heureVente,
+                String commandeClient, BigDecimal montantTotal, String statutTransaction) {
+            this.idVente = new SimpleLongProperty(idVente);
+            this.dateVente = new SimpleStringProperty(dateVente);
+            this.heureVente = new SimpleStringProperty(heureVente);
+            this.commandeClient = new SimpleStringProperty(commandeClient);
+            this.montantTotal = new SimpleObjectProperty<>(montantTotal);
+            this.statutTransaction = new SimpleStringProperty(statutTransaction);
+        }
+
+        // Getters pour JavaFX Property
+        public LongProperty idVenteProperty() {
+            return idVente;
+        }
+
+        public StringProperty dateVenteProperty() {
+            return dateVente;
+        }
+
+        public StringProperty heureVenteProperty() {
+            return heureVente;
+        }
+
+        public StringProperty commandeClientProperty() {
+            return commandeClient;
+        }
+
+        public ObjectProperty<BigDecimal> montantTotalProperty() {
+            return montantTotal;
+        }
+
+        public StringProperty statutTransactionProperty() {
+            return statutTransaction;
+        }
+
+        // Getters classiques
+        public long getIdVente() {
+            return idVente.get();
+        }
+
+        public String getDateVente() {
+            return dateVente.get();
+        }
+
+        public String getHeureVente() {
+            return heureVente.get();
+        }
+
+        public String getCommandeClient() {
+            return commandeClient.get();
+        }
+
+        public BigDecimal getMontantTotal() {
+            return montantTotal.get();
+        }
+
+        public String getStatutTransaction() {
+            return statutTransaction.get();
+        }
+    }
+
 
 }
