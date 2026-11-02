@@ -110,6 +110,14 @@
     -fx-effect: dropshadow(gaussian, #a7d0f2, 5, 0, 0, 1);
 }
 
+/* Cible le menu pop-up global du ChoiceBox */
+.choice-box > .context-menu {
+    -fx-background-color: #2b2b2b; /* Fond sombre */
+    -fx-background-radius: 6px;
+    -fx-border-color: #444444;
+    -fx-border-radius: 6px;
+}
+
 .pdf-button {
     -fx-background-color: #2d7dd2;
     -fx-text-fill: white;

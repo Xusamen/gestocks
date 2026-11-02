@@ -89,7 +89,35 @@ public class FenetrePrincipaleControleur {
 
     @FXML
     void ouvrir_parametres_fenetre() {
+        highlightButton(Bouton_parametres);
+        if (!(conteneur.getChildren().isEmpty())) {
+            conteneur.getChildren().clear();
+        }
+        Task<TabPane> task = new Task<TabPane>() {
+            @SuppressWarnings("unused")
+            @Override
+            protected TabPane call() throws Exception {
+                TabPane FenetreParametre = null;
+                try {
 
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("FenetreParametre.fxml"));
+                    FenetreParametre = loader.load();
+                    FenetreParametreControleur controleur_vente = loader.getController();
+                } catch (Exception erreur) {
+                    // Gérer l'erreur si nécessaire
+                    System.out.println(erreur.getMessage());
+                }
+                return FenetreParametre;
+            }
+        };
+        task.setOnSucceeded(evenement5 -> {
+            TabPane FenetreParametre = task.getValue();
+            Platform.runLater(() -> {
+                conteneur.getChildren().add(FenetreParametre);
+            });
+        });
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     @FXML

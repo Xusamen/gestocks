@@ -5,6 +5,7 @@ import java.sql.*;
 import java.time.LocalDate;
 
 import com.cybersek.gestocks.App;
+import com.cybersek.gestocks.Functions;
 import com.cybersek.gestocks.StructureDonnee.InfoEncaissement;
 
 import javafx.collections.FXCollections;
@@ -121,10 +122,15 @@ public class Encaissement {
 
         int anneeCourante = LocalDate.now().getYear();
 
+        // Requête pour récupérer la session active (IN_PROGRESS)
+        String sqlGetActiveSession = "SELECT id FROM session_vente WHERE etat = 'IN_PROGRESS' LIMIT 1";
+
         // Requête pour compter combien de reçus ont déjà été émis cette année
         String sqlCountRecu = "SELECT COUNT(*) FROM vente WHERE YEAR(date_vente) = ? AND numero_recu IS NOT NULL";
 
+        // Requête de mise à jour incluant id_session
         String sqlUpdate = "UPDATE vente SET " +
+                "id_session = ?, " +
                 "type_encaissement = ?, " +
                 "montant_total = ?, " +
                 "montant_verser = ?, " +
@@ -138,6 +144,23 @@ public class Encaissement {
             conn.setAutoCommit(false);
 
             try {
+                Long idSessionActive = null;
+
+                // Étape 0 : Vérifier et récupérer l'ID de la session active
+                try (PreparedStatement pstmtSession = conn.prepareStatement(sqlGetActiveSession);
+                        ResultSet rsSession = pstmtSession.executeQuery()) {
+                    if (rsSession.next()) {
+                        idSessionActive = rsSession.getLong("id");
+                    }
+                }
+
+                // Notification si aucune session n'est active, mais on continue la vente
+                if (idSessionActive == null) {
+                    System.out.println(
+                        "Avertissement : Vente #" + idVente + " validée sans session active (id_session = NULL).");
+                    Functions.Alerte_erreur( "Avertissement : Vente #" + idVente + " validée sans session active (id_session = NULL).");
+                }
+
                 int sequenceNumber = 1;
 
                 // Étape 1 : Calculer le prochain numéro séquentiel pour l'année en cours
@@ -145,29 +168,35 @@ public class Encaissement {
                     pstmtCount.setInt(1, anneeCourante);
                     try (ResultSet rs = pstmtCount.executeQuery()) {
                         if (rs.next()) {
-                            sequenceNumber = rs.getInt(1) + 1; // S'il y en a 5, le prochain est 6
+                            sequenceNumber = rs.getInt(1) + 1;
                         }
                     }
                 }
 
-                // Étape 2 : Formater le numéro de reçu (Ex: G2026REC00001, puis G2027REC00001
-                // en 2027)
+                // Étape 2 : Formater le numéro de reçu (Ex: G2026REC00001)
                 String numeroRecu = String.format("G%dREC%05d", anneeCourante, sequenceNumber);
 
-                // Étape 3 : Mettre à jour la vente
+                // Étape 3 : Mettre à jour la vente avec ou sans la session
                 try (PreparedStatement pstmt = conn.prepareStatement(sqlUpdate)) {
-                    pstmt.setString(1, typeEncaissement);
-                    pstmt.setBigDecimal(2, montantFinal);
-                    pstmt.setBigDecimal(3, montantVerser);
-                    pstmt.setBigDecimal(4, monnaieRendu);
-                    pstmt.setBigDecimal(5, reduction != null ? reduction : BigDecimal.ZERO);
-                    pstmt.setString(6, numeroRecu);
-                    pstmt.setLong(7, idVente);
+                    if (idSessionActive != null) {
+                        pstmt.setLong(1, idSessionActive);
+                    } else {
+                        pstmt.setNull(1, java.sql.Types.BIGINT); // Injection de NULL si pas de session active
+                    }
+
+                    pstmt.setString(2, typeEncaissement);
+                    pstmt.setBigDecimal(3, montantFinal);
+                    pstmt.setBigDecimal(4, montantVerser);
+                    pstmt.setBigDecimal(5, monnaieRendu);
+                    pstmt.setBigDecimal(6, reduction != null ? reduction : BigDecimal.ZERO);
+                    pstmt.setString(7, numeroRecu);
+                    pstmt.setLong(8, idVente);
 
                     int rowsAffected = pstmt.executeUpdate();
                     if (rowsAffected > 0) {
                         conn.commit();
-                        System.out.println("Encaissement réussi pour la vente #" + idVente + " - Reçu : " + numeroRecu);
+                        System.out.println("Encaissement réussi pour la vente #" + idVente +
+                                " - Reçu : " + numeroRecu);
                         return true;
                     } else {
                         conn.rollback();

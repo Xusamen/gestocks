@@ -285,7 +285,7 @@ public class StructureDonnee {
         }
     }
 
-    public static  class InfoEncaissement {
+    public static class InfoEncaissement {
         private final LongProperty idVente;
         private final StringProperty dateVente;
         private final StringProperty heureVente;
@@ -354,5 +354,191 @@ public class StructureDonnee {
         }
     }
 
+    public static class TableauBilanJournalier {
+        private LocalDate date;
+        private BigDecimal chiffreAffaires;
 
+        public TableauBilanJournalier(LocalDate date, BigDecimal chiffreAffaires) {
+            this.date = date;
+            this.chiffreAffaires = chiffreAffaires;
+        }
+
+        public LocalDate getDate() {
+            return date;
+        }
+
+        public void setDate(LocalDate date) {
+            this.date = date;
+        }
+
+        public BigDecimal getChiffreAffaires() {
+            return chiffreAffaires;
+        }
+
+        public void setChiffreAffaires(BigDecimal chiffreAffaires) {
+            this.chiffreAffaires = chiffreAffaires;
+        }
+    }
+
+    public static class TableauBilanMensuel {
+        private String mois;
+        private BigDecimal chiffreAffaires;
+
+        public TableauBilanMensuel(String mois, BigDecimal chiffreAffaires) {
+            this.mois = mois;
+            this.chiffreAffaires = chiffreAffaires;
+        }
+
+        public String getMois() {
+            return mois;
+        }
+
+        public void setMois(String mois) {
+            this.mois = mois;
+        }
+
+        public BigDecimal getChiffreAffaires() {
+            return chiffreAffaires;
+        }
+
+        public void setChiffreAffaires(BigDecimal chiffreAffaires) {
+            this.chiffreAffaires = chiffreAffaires;
+        }
+    }
+
+    public static class TableauBilanAnnuel {
+        private int annee;
+        private BigDecimal chiffreAffaires;
+
+        public TableauBilanAnnuel(int annee, BigDecimal chiffreAffaires) {
+            this.annee = annee;
+            this.chiffreAffaires = chiffreAffaires;
+        }
+
+        public int getAnnee() {
+            return annee;
+        }
+
+        public void setAnnee(int annee) {
+            this.annee = annee;
+        }
+
+        public BigDecimal getChiffreAffaires() {
+            return chiffreAffaires;
+        }
+
+        public void setChiffreAffaires(BigDecimal chiffreAffaires) {
+            this.chiffreAffaires = chiffreAffaires;
+        }
+    }
+
+    public static class SessionVente {
+        private Long id;
+        private LocalDateTime dateVente;
+        private String descriptionSession;
+        private String etat; // 'UNUSED', 'IN_PROGRESS', 'CLOSED'
+        private Integer userStart;
+        private Integer userStop;
+
+        // Constructeur complet
+        public SessionVente(Long id, LocalDateTime dateVente, String descriptionSession, String etat, Integer userStart,
+                Integer userStop) {
+            this.id = id;
+            this.dateVente = dateVente;
+            this.descriptionSession = descriptionSession;
+            this.etat = etat;
+            this.userStart = userStart;
+            this.userStop = userStop;
+        }
+
+        // Constructeur vide
+        public SessionVente() {
+        }
+
+        // Getters et Setters
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public LocalDateTime getDateVente() {
+            return dateVente;
+        }
+
+        public void setDateVente(LocalDateTime dateVente) {
+            this.dateVente = dateVente;
+        }
+
+        public String getDescriptionSession() {
+            return descriptionSession;
+        }
+
+        public void setDescriptionSession(String descriptionSession) {
+            this.descriptionSession = descriptionSession;
+        }
+
+        public String getEtat() {
+            return etat;
+        }
+
+        public void setEtat(String etat) {
+            this.etat = etat;
+        }
+
+        public Integer getUserStart() {
+            return userStart;
+        }
+
+        public void setUserStart(Integer userStart) {
+            this.userStart = userStart;
+        }
+
+        public Integer getUserStop() {
+            return userStop;
+        }
+
+        public void setUserStop(Integer userStop) {
+            this.userStop = userStop;
+        }
+    }
+
+    public static class InfoUser {
+        private int id;
+        private String nom;
+        private String prenom;
+        private String identifiant;
+        private String fonction;
+
+        public InfoUser(int id, String nom, String prenom, String identifiant, String fonction) {
+            this.id = id;
+            this.nom = nom;
+            this.prenom = prenom;
+            this.identifiant = identifiant;
+            this.fonction = fonction;
+        }
+
+        // Getters
+        public int getId() {
+            return id;
+        }
+
+        public String getNom() {
+            return nom;
+        }
+
+        public String getPrenom() {
+            return prenom;
+        }
+
+        public String getIdentifiant() {
+            return identifiant;
+        }
+
+        public String getFonction() {
+            return fonction;
+        }
+    }
 }

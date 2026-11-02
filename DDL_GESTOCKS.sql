@@ -1,6 +1,5 @@
 use gestocks;
-// DESTION UTILISATEUR 
-CREATE TABLE `utilisateurs` (
+// DESTION UTILISATEUR CREATE TABLE `utilisateurs` (
   `id_utilisateur` INT NOT NULL AUTO_INCREMENT,
   `nom` VARCHAR(100) DEFAULT NULL,
   `prenom` VARCHAR(100) DEFAULT NULL,
@@ -171,19 +170,24 @@ CREATE TABLE stocks (
     AND quantite_restante <= quantite_appro
   )
 );
+// 03 etat INTERROMPUE,
+EN_ATTENTE,
+PAYEE 
 
-// 03 etat INTERROMPUE, EN_ATTENTE, PAYEE
 CREATE TABLE vente (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  type_encaissement  VARCHAR(255),
-  date_vente DATETIME DEFAULT CURRENT_TIMESTAMP,
-  montant_total DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-  montant_verser DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-  monnaie_rendu DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-  reduction_appliquer DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-  numero_recu VARCHAR(255),
-  statut VARCHAR(30) DEFAULT 'INTERROMPUE'
-);
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id_session BIGINT DEFAULT NULL,
+    type_encaissement VARCHAR(255),
+    date_vente DATETIME DEFAULT CURRENT_TIMESTAMP,
+    montant_total DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    montant_verser DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    monnaie_rendu DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    reduction_appliquer DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    numero_recu VARCHAR(255),
+    statut VARCHAR(30) DEFAULT 'INTERROMPUE',
+    CONSTRAINT fk_vente_session FOREIGN KEY (id_session) 
+        REFERENCES session_vente(id) ON DELETE SET NULL
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 CREATE TABLE commande (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -197,3 +201,48 @@ CREATE TABLE commande (
   FOREIGN KEY (id_produit) REFERENCES produit(id_produit),
   FOREIGN KEY (id_stock_prov) REFERENCES stocks(id)
 );
+CREATE TABLE session_vente (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    date_vente DATETIME DEFAULT CURRENT_TIMESTAMP,
+    description_session VARCHAR(255),
+    etat ENUM('UNUSED', 'IN_PROGRESS', 'CLOSED') NOT NULL DEFAULT 'UNUSED',
+    user_start INT DEFAULT NULL,
+    user_stop INT DEFAULT NULL,
+    CONSTRAINT fk_session_user_start FOREIGN KEY (user_start) 
+        REFERENCES utilisateurs(id_utilisateur) ON DELETE SET NULL,
+    CONSTRAINT fk_session_user_stop FOREIGN KEY (user_stop) 
+        REFERENCES utilisateurs(id_utilisateur) ON DELETE SET NULL
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+-- 3. Activation du planificateur d'événements MySQL
+SET GLOBAL event_scheduler = ON;
+
+-- 4. Création de l'événement quotidien pour les 3 sessions
+DELIMITER //
+
+CREATE EVENT IF NOT EXISTS evt_generer_sessions_quotidiennes
+ON SCHEDULE EVERY 1 DAY
+STARTS TIMESTAMP(CURRENT_DATE + INTERVAL 1 DAY)
+DO
+BEGIN
+    -- Tranche 1 : 08H - 14H
+    INSERT INTO session_vente (date_vente, description_session, etat)
+    VALUES (NOW(), CONCAT('Session Vente || Date : ', DATE_FORMAT(NOW(), '%d/%m/%Y'), ' || Horaire : 08H - 14H'), 'UNUSED');
+
+    -- Tranche 2 : 14H - 20H
+    INSERT INTO session_vente (date_vente, description_session, etat)
+    VALUES (NOW(), CONCAT('Session Vente || Date : ', DATE_FORMAT(NOW(), '%d/%m/%Y'), ' || Horaire : 14H - 20H'), 'UNUSED');
+
+    -- Tranche 3 : 20H - 08H
+    INSERT INTO session_vente (date_vente, description_session, etat)
+    VALUES (NOW(), CONCAT('Session Vente || Date : ', DATE_FORMAT(NOW(), '%d/%m/%Y'), ' || Horaire : 20H - 08H'), 'UNUSED');
+END //
+
+DELIMITER ;
+
+
+INSERT INTO session_vente (date_vente, description_session, etat)
+VALUES 
+(CURDATE(), CONCAT('Session Vente || Date : ', DATE_FORMAT(CURDATE(), '%d/%m/%Y'), ' || Horaire : 08H - 14H'), 'UNUSED'),
+(CURDATE(), CONCAT('Session Vente || Date : ', DATE_FORMAT(CURDATE(), '%d/%m/%Y'), ' || Horaire : 14H - 20H'), 'UNUSED'),
+(CURDATE(), CONCAT('Session Vente || Date : ', DATE_FORMAT(CURDATE(), '%d/%m/%Y'), ' || Horaire : 20H - 08H'), 'UNUSED');

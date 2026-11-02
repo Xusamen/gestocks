@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -9,6 +10,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -117,29 +119,19 @@
                         <Font name="System Bold" size="30.0" />
                      </font>
                   </Label>
+                  <Pane layoutX="20.0" layoutY="80.0" prefHeight="65.0" prefWidth="1255.0" style="-fx-background-color: #D8DCDE; -fx-background-radius: 10;" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
+                     <children>
+                        <Text fx:id="label_session_vente" layoutX="24.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                           <font>
+                              <Font name="System Bold Italic" size="25.0" />
+                           </font>
+                        </Text>
+                        <Button fx:id="bouton_session_vente" layoutX="1077.0" layoutY="19.0" mnemonicParsing="false" onAction="#GestionSession" text="Button" />
+                     </children>
+                  </Pane>
                </children></AnchorPane>
         </content>
       </Tab>
-    <Tab text="HISTORIQUE ENCAISSEMENT">
-      <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <Label alignment="CENTER" layoutX="170.0" layoutY="31.0" text="Historique Encaissement" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <font>
-                        <Font name="System Bold" size="30.0" />
-                     </font>
-                  </Label>
-                  <TableView layoutX="14.0" layoutY="96.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="150.0">
-                    <columns>
-                      <TableColumn prefWidth="350.0" text="Nom et Prenom" />
-                      <TableColumn prefWidth="100.0" text="Montant Total" />
-                        <TableColumn prefWidth="100.0" text="Date" />
-                        <TableColumn maxWidth="75.0" prefWidth="75.0" text="Heure" />
-                    </columns>
-                  </TableView>
-               </children></AnchorPane>
-      </content>
-    </Tab>
       <Tab text="BILAN">
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -148,17 +140,104 @@
                     <tabs>
                       <Tab text="Journalier">
                         <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TableView fx:id="tabbleau_bilan_journalier" layoutX="25.0" layoutY="135.0" prefHeight="300.0" prefWidth="1251.0" stylesheets="@css/style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="150.0">
+                                      <columns>
+                                        <TableColumn fx:id="colonne_date_bilan_journalier" maxWidth="200.0" prefWidth="200.0" text="Date" />
+                                          <TableColumn fx:id="colonne_ca_bilan_journalier" maxWidth="200.0" prefWidth="200.0" text="Chiffre D'affaire CFA" />
+                                          <TableColumn fx:id="colonne_actions_bilan_journalier" prefWidth="200.0" text="Actions" />
+                                      </columns>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                    </TableView>
+                                    <Label alignment="CENTER" layoutY="3.666666666666667" text="Sortie Journalière" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <font>
+                                          <Font size="30.0" />
+                                       </font>
+                                    </Label>
+                                    <StackPane layoutY="433.0" prefHeight="80.0" prefWidth="1291.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                    <Pane layoutX="16.0" layoutY="79.0" prefHeight="65.0" prefWidth="1255.0" style="-fx-background-color: #D8DCDE; -fx-background-radius: 10;" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
+                                       <children>
+                                          <Label layoutX="6.0" prefHeight="66.0" prefWidth="111.0" text="Filtre --&gt;">
+                                             <font>
+                                                <Font name="System Bold" size="25.0" />
+                                             </font>
+                                          </Label>
+                                          <TextField fx:id="champ_date_bilan_journalier" layoutX="162.0" layoutY="29.0" prefHeight="28.0" prefWidth="250.0" promptText="jj/mm/aaaa" stylesheets="@css/style.css" />
+                                          <Label layoutX="163.0" layoutY="11.0" prefHeight="17.0" prefWidth="250.0" text="Date">
+                                             <font>
+                                                <Font name="System Bold Italic" size="12.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </Pane>
+                                 </children></AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="Mensuel">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                        </content>
-                      </Tab>
+                        <Tab text="Mensuel">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TableView fx:id="tableau_bilan_mensuel" layoutX="25.0" layoutY="135.0" prefHeight="300.0" prefWidth="1251.0" stylesheets="@css/style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="150.0">
+                                       <columns>
+                                          <TableColumn fx:id="colonne_mois_bilan_mensuel" maxWidth="200.0" prefWidth="200.0" text="Mois" />
+                                          <TableColumn fx:id="colonne_ca_bilan_mensuel" maxWidth="200.0" prefWidth="200.0" text="Chiffre D'affaire CFA" />
+                                          <TableColumn fx:id="colonne_actions_bilan_mensuel" prefWidth="200.0" text="Actions" />
+                                       </columns>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                    </TableView>
+                                    <Label alignment="CENTER" layoutY="3.666666666666667" text="Sortie Mensuelle" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <font>
+                                          <Font size="30.0" />
+                                       </font>
+                                    </Label>
+                                    <StackPane layoutY="433.0" prefHeight="80.0" prefWidth="1291.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                    <Pane layoutX="16.0" layoutY="79.0" prefHeight="65.0" prefWidth="1255.0" style="-fx-background-color: #D8DCDE; -fx-background-radius: 10;" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
+                                       <children>
+                                          <Label layoutX="6.0" prefHeight="66.0" prefWidth="111.0" text="Filtre --&gt;">
+                                             <font>
+                                                <Font name="System Bold" size="25.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="163.0" layoutY="11.0" prefHeight="17.0" prefWidth="250.0" text="Année">
+                                             <font>
+                                                <Font name="System Bold Italic" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <ChoiceBox fx:id="choicebox_annee_bilan_mensuel" layoutX="161.0" layoutY="28.0" prefHeight="30.0" prefWidth="250.0" stylesheets="@css/choice_box.css" />
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
                         <Tab text="Annuel">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TableView fx:id="tableau_bilan_annuel" layoutX="25.0" layoutY="135.0" prefHeight="300.0" prefWidth="1251.0" stylesheets="@css/style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="150.0">
+                                       <columns>
+                                          <TableColumn fx:id="colonne_annee_bilan_annuel" maxWidth="200.0" prefWidth="200.0" text="Année" />
+                                          <TableColumn fx:id="colonne_ca_bilan_annuel" maxWidth="200.0" prefWidth="200.0" text="Chiffre D'affaire CFA" />
+                                          <TableColumn fx:id="colonne_actions_bilan_annuel" prefWidth="200.0" text="Actions" />
+                                       </columns>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                    </TableView>
+                                    <Label alignment="CENTER" layoutY="3.666666666666667" text="Sortie Annuelle" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <font>
+                                          <Font size="30.0" />
+                                       </font>
+                                    </Label>
+                                    <StackPane layoutY="433.0" prefHeight="80.0" prefWidth="1291.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                    <Pane layoutX="16.0" layoutY="79.0" prefHeight="65.0" prefWidth="1255.0" style="-fx-background-color: #D8DCDE; -fx-background-radius: 10;" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0" />
+                                 </children>
+                              </AnchorPane>
                            </content>
                         </Tab>
                     </tabs>

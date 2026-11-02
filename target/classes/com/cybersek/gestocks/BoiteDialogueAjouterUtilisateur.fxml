@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cybersek.gestocks.BoiteDialogueAjouterUtilisateurControleur">
+   <children>
+      <Label alignment="CENTER" layoutX="50.0" layoutY="8.0" prefHeight="19.0" prefWidth="500.0" text="Nouveau Utilisateur">
+         <font>
+            <Font name="Segoe UI Bold" size="25.0" />
+         </font>
+      </Label>
+      <Button fx:id="bouton_ajouter" defaultButton="true" layoutX="416.0" layoutY="263.0" mnemonicParsing="false" onAction="#AjouterUtilisateur" prefHeight="25.0" prefWidth="100.0" styleClass="consulter-button" stylesheets="@css/style.css" text="Ajouter" />
+      <Button fx:id="bouton_annuler" cancelButton="true" layoutX="334.0" layoutY="263.0" mnemonicParsing="false" onAction="#AnnulerAjoutUtilisateur" styleClass="rouge-button" stylesheets="@css/button_bilan.css" text="Annuler" />
+      <TextField fx:id="champ_nom" layoutX="21.0" layoutY="93.0" stylesheets="@css/style.css" />
+      <TextField fx:id="champ_prenoms" layoutX="223.0" layoutY="93.0" stylesheets="@css/style.css" />
+      <TextField fx:id="champ_identifiant" layoutX="21.0" layoutY="177.0" stylesheets="@css/style.css" />
+      <TextField fx:id="champ_mdp" layoutX="223.0" layoutY="177.0" stylesheets="@css/style.css" />
+      <Label layoutX="21.0" layoutY="76.0" text="Nom" />
+      <Label layoutX="227.0" layoutY="76.0" text="Prenoms" />
+      <Label layoutX="21.0" layoutY="160.0" text="Identifiant" />
+      <Label layoutX="227.0" layoutY="160.0" text="Mot de passe" />
+      <TextField fx:id="champ_fonction" layoutX="430.0" layoutY="93.0" stylesheets="@css/style.css" />
+      <Label layoutX="430.0" layoutY="76.0" text="Fonction" />
+   </children>
+</Pane>
